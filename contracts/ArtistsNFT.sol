@@ -29,7 +29,9 @@ contract ArtistsNFT is ERC721, IERC2981 {
     super._mint(to, tokenId);
   }
 
-  function _transfer(address from, address to, uint tokenId) internal override {
+  function _transfer(address from, address to, uint tokenId) internal override virtual {
+    // this is virtual in case the protection on the following line
+    // would be altered in any way
     require(msg.value >= minimumSalePrice, "minimumSalePrice must be met."); 
     super._transfer(from, to, tokenId);
   }
