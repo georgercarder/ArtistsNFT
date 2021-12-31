@@ -24,11 +24,15 @@ contract ArtistsNFT is ERC721, IERC2981 {
     minimumSalePrice = _minimumSalePrice; 
   }
 
+  // note: special care must be made for mints within "for" loops
+  //   where msg.value is to be dispersed over mints
   function _mint(address to, uint tokenId) internal override {
     require(msg.value >= minimumSalePrice, "minimumSalePrice must be met."); 
     super._mint(to, tokenId);
   }
 
+  // note: special care must be made for transfers within "for" loops
+  //   where msg.value is to be dispersed over transfers 
   function _transfer(address from, address to, uint tokenId) internal override virtual {
     // this is virtual in case the protection on the following line
     // would be altered in any way
@@ -36,6 +40,9 @@ contract ArtistsNFT is ERC721, IERC2981 {
     super._transfer(from, to, tokenId);
   }
 
+  // note: special care must be made for transfers within "for" loops
+  //   where msg.value is to be dispersed over transfers. 
+  //   Program defensively to ensure proper accounting
   function _beforeTokenTransfer(address from, address to, uint tokenId) internal override {
     (/*receiver is artists*/, uint royaltyAmount) = _royaltyInfo(tokenId, msg.value);
     unchecked {
